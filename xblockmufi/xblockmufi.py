@@ -44,6 +44,7 @@ class XblockMufi(XBlock):
             path_html='view.html',
             paths_css=[
                 'view.less.min.css',
+                'library/font-awesome.min.css',
             ],
             paths_js=[
                 'view.js.min.js',
@@ -62,6 +63,7 @@ class XblockMufi(XBlock):
             path_html='edit.html',
             paths_css=[
                 'edit.less.min.css',
+                'library/font-awesome.min.css',
             ],
             paths_js=[
                 'edit.js.min.js',
