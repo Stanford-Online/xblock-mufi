@@ -1,0 +1,8 @@
+xblock_mufi.egg-info/PKG-INFO
+xblock_mufi.egg-info/SOURCES.txt
+xblock_mufi.egg-info/dependency_links.txt
+xblock_mufi.egg-info/entry_points.txt
+xblock_mufi.egg-info/requires.txt
+xblock_mufi.egg-info/top_level.txt
+xblockmufi/__init__.py
+xblockmufi/xblockmufi.py

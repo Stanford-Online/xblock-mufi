@@ -1,0 +1,18 @@
+Metadata-Version: 1.1
+Name: xblock-mufi
+Version: 0.1.0
+Summary: XBlock for transcribing manuscripts using MUFI font.
+Home-page: https://github.com/Stanford-Online/xblock-mufi
+Author: Giulio Gratta
+Author-email: giulio@giuliogratta.com
+License: AGPL-3.0
+Description: XBlock for transcribing manuscripts using MUFI font.
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: JavaScript
+Classifier: Programming Language :: Python
+Classifier: Topic :: Education
+Classifier: Topic :: Internet :: WWW/HTTP
