@@ -36,12 +36,14 @@ module.exports = function (grunt) {
             cssView: {
                 src: [
                     directoryPrivate + '/view.less',
+                    directoryPrivate + '/text_editor.less',
                 ],
                 dest: directoryPublic + '/view.less',
             },
             cssEdit: {
                 src: [
                     directoryPrivate + '/edit.less',
+                    directoryPrivate + '/text_editor.less',
                 ],
                 dest: directoryPublic + '/edit.less',
             },
@@ -60,6 +62,30 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            fonts: {
+                files: [
+                    {
+                        expand: true,
+                        src: [
+                            directoryPrivate + '/fonts/*',
+                        ],
+                        dest: directoryPublic + '/fonts/',
+                        flatten: true,
+                    }
+                ]
+            },
+            library: {
+                files: [
+                    {
+                        expand: true,
+                        src: [
+                            directoryPrivate + '/library/*',
+                        ],
+                        dest: directoryPublic + '/library/',
+                        flatten: true,
+                    }
+                ]
+            }
         },
         csslint: {
             dist: {
