@@ -60,6 +60,30 @@ module.exports = function (grunt) {
                     },
                 ],
             },
+            fonts: {
+                files: [
+                    {
+                        expand: true,
+                        src: [
+                            directoryPrivate + '/fonts/*',
+                        ],
+                        dest: directoryPublic + '/fonts/',
+                        flatten: true,
+                    }
+                ]
+            },
+            library: {
+                files: [
+                    {
+                        expand: true,
+                        src: [
+                            directoryPrivate + '/library/*',
+                        ],
+                        dest: directoryPublic + '/library/',
+                        flatten: true,
+                    }
+                ]
+            }
         },
         csslint: {
             dist: {
