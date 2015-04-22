@@ -12,9 +12,9 @@ from xblock.fragment import Fragment
 
 
 class XblockMufi(XBlock):
-    '''
+    """
     Icon of the XBlock. Values : [other (default), video, problem]
-    '''
+    """
     icon_class = 'problem'
 
     @staticmethod
@@ -31,9 +31,9 @@ class XblockMufi(XBlock):
              """),
         ]
 
-    '''
+    """
     Fields
-    '''
+    """
     DEFAULT_FIELDS = [
         'parent',
         'tags',
@@ -48,30 +48,30 @@ class XblockMufi(XBlock):
     student_answer = String(
         default='',
         scope=Scope.user_state,
-        help='This is the student\'s answer to the question',
+        help="This is the student's answer to the question",
     )
 
     your_answer_label = String(
         default='Your Answer:',
         scope=Scope.settings,
-        help='Label for the text area containing the student\'s answer',
+        help="Label for the text area containing the student's answer",
     )
 
     our_answer_label = String(
         default='Our Answer:',
         scope=Scope.settings,
-        help='Label for the \'expert\' answer',
+        help="Label for the 'expert' answer",
     )
 
     answer_string = String(
         default='',
         scope=Scope.settings,
-        help='The \'expert\' answer.',
+        help="The 'expert' answer.",
     )
 
-    '''
+    """
     Main functions
-    '''
+    """
     def student_view(self, context=None):
         """
         Build the fragment for the default student view
@@ -80,7 +80,6 @@ class XblockMufi(XBlock):
             path_html='view.html',
             paths_css=[
                 'view.less.min.css',
-                'text_editor.less.min.css',
                 'library/font-awesome.min.css',
             ],
             paths_js=[
@@ -107,7 +106,6 @@ class XblockMufi(XBlock):
             path_html='edit.html',
             paths_css=[
                 'edit.less.min.css',
-                'text_editor.less.min.css',
                 'library/font-awesome.min.css',
             ],
             paths_js=[
@@ -171,11 +169,6 @@ class XblockMufi(XBlock):
         """
         Assemble the HTML, JS, and CSS for an XBlock fragment
         """
-        context = context or {
-            key: getattr(self, key)
-                for key in self.fields
-                    if key not in DEFAULT_FIELDS
-        }
         html_source = self.get_resource_string(path_html)
         html_source = html_source.format(
             self=self,
@@ -197,11 +190,11 @@ class XblockMufi(XBlock):
         return fragment
 
     @XBlock.json_handler
-    def student_submit(self, submissions, suffix=''):
-        '''
+    def student_submit(self, data, suffix=''):
+        """
         Save student answer
-        '''
-        self.student_answer = submissions['answer']
+        """
+        self.student_answer = data['answer']
         return {'success':True}
 
     @XBlock.json_handler
@@ -217,25 +210,25 @@ class XblockMufi(XBlock):
 
         return {'result': 'success'}
 
-    '''
+    """
     Util functions
-    '''
+    """
     def load_resource(self, resource_path):
-        '''
+        """
         Gets the content of a resource
-        '''
+        """
         resource_content = pkg_resources.resource_string(__name__, resource_path)
         return unicode(resource_content)
 
     def render_template(self, template_path, context={}):
-        '''
+        """
         Evaluate a template by resource path, applying the provided context
-        '''
+        """
         template_str = self.load_resource(template_path)
         return Template(template_str).render(Context(context))
 
     def resource_string(self, path):
-        '''Handy helper for getting resources from our kit.'''
+        """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
         return data.decode('utf8')
 

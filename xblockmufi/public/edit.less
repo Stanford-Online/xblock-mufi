@@ -1,1 +1,222 @@
+.xblockmufi_edit {
+    // TODO: Style editor here
+}
+;
+@font-face {
+  font-family: "Andron Scriptor Web";
+  src: url('fonts/AndronScriptorWeb.eot');
+  src: url('fonts/AndronScriptorWeb.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('fonts/AndronScriptorWeb.woff') format('woff'), /* Pretty Modern Browsers */
+       url('fonts/AndronScriptorWeb.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+.xblockmufi_block {
+    .xblockmufi_block_textarea {
+        border: 1px solid #ccc;
+        background-color: #fff;
+        font-size: 18px;
 
+        .toolbar {
+            display: block;
+            position: relative;
+            width: 100%;
+            margin: 0;
+            padding: 0 !important;
+            float: left;
+            border-bottom: 1px solid #ccc;
+            list-style: none;
+
+            li {
+                position: relative;
+                display: block;
+                margin: 0 !important;
+                float: left;
+                border-right: 1px solid #ccc;
+
+                a {
+                    display: block;
+                    border: none;
+                    padding: 5px 8px;
+                    background-color: transparent;
+                    font-size: 15px;
+                    line-height: 18px;
+                    color: #444;
+
+                    i {
+                        font-size: 18px;
+                        font-style: normal !important;
+                    }
+                }
+
+                &.red-text {
+                    a {
+                        color: #dd0000;
+                    }
+                    &:hover a {
+                        background-color: #dd0000 !important;
+                    }
+                }
+                &.green-text {
+                    a {
+                        color: #008800;
+                    }
+                    &:hover a {
+                        background-color: #008800 !important;
+                    }
+                }
+                &.blue-text {
+                    a {
+                        color: #0000dd;
+                    }
+                    &:hover a {
+                        background-color: #0000dd !important;
+                    }
+                }
+
+                &:hover,
+                &.specialButton.active {
+                    a {
+                        background-color: #444;
+                        color: #fff;
+                    }
+                }
+
+                &.specialButton {
+                    float: right;
+                    border-right: none;
+                    border-left: 1px solid #ccc;
+
+                    a {
+                        padding: 6px 8px 3px 8px;
+                    }
+                    i {
+                        line-height: 15px;
+                        font-size: 24px;
+                        vertical-align: baseline;
+                    }
+
+                    .sr .toggle-open {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .specialCharTable {
+            display: none; // This gets overridden in JS when keyboard is toggled.
+            position: relative;
+            float: left;
+            clear: both;
+            width: 100%;
+            font-family: "Andron Scriptor Web", serif !important;
+
+            .charZoomTitle {
+                height: 22px;
+                padding: 4px 120px 2px 5px;
+                text-align: right;
+                line-height: 22px;
+                border-bottom: 1px solid #ccc;
+
+                span {
+                    font: normal 1em "Andron Scriptor Web";
+                }
+            }
+            .charZoom {
+                width: 100px;
+                height: 100px;
+                padding: 5px;
+                float: right;
+                border-left: 1px solid #ccc;
+                font-size: 60px;
+                line-height: 1.75em;
+                text-align: center;
+                background: white;
+
+                .intro-zoom-icon {
+                    margin-top: 19px;
+                }
+            }
+            .charWrapper {
+                float: right;
+                margin-left: -1px;
+
+                .char {
+                    width: 29px;
+                    height: 30px;
+                    padding: 5px;
+                    margin-top: -1px;
+                    margin-right: -1px;
+                    float: right;
+                    border: 1px solid #ccc;
+                    font-size: 22px;
+                    line-height: 1.5em;
+                    text-align: center;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: #444;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        .contents {
+            position: relative;
+            top: -1px;
+            padding: 10px;
+            min-height: 250px;
+            clear: both;
+            overflow: auto;
+            resize: vertical;
+            border-top: 1px solid #ccc;
+            font-family: "Andron Scriptor Web", serif !important;
+        }
+
+        b {
+            float: left;
+            font-size: 72px;
+            line-height: 60px;
+            padding: 5px 10px 5px 0;
+        }
+
+        li.red-text {
+            a {
+                color: #dd0000;
+            }
+            &:hover a {
+                background-color: #dd0000 !important;
+            }
+        }
+        li.green-text {
+            a {
+                color: #008800;
+            }
+            &:hover a {
+                background-color: #008800 !important;
+            }
+        }
+        li.blue-text {
+            a {
+                color: #0000dd;
+            }
+            &:hover a {
+                background-color: #0000dd !important;
+            }
+        }
+
+        .hint {
+            color: #666;
+        }
+
+        .sr {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+    }
+}

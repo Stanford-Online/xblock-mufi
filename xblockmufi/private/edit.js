@@ -52,17 +52,15 @@ function XblockMufiEdit(runtime, element) {
     });
 
     $('.specialCharTable .charWrapper .char').hover(function() {
-        var selChar = $(this).html();
-        var selCharTitle = $(this).attr('title');
-        if (!selCharTitle) {
-            selCharTitle = "";
-        }
-        $('.charZoom').html(selChar);
-        $('.charZoomTitle').text(selCharTitle);
+        var selectedChar = $(this).html();
+        var selectedCharTitle = $(this).attr('title') || "";
+
+        $('.charZoom').html(selectedChar);
+        $('.charZoomTitle').text(selectedCharTitle);
     });
 
     $('.specialCharTable .charWrapper .char').mousedown(function() {
-        var textToInsert = $(this).html();
-        document.execCommand('insertHTML', false, textToInsert);
+        var charToInsert = $(this).html();
+        document.execCommand('insertHTML', false, charToInsert);
     });
 }

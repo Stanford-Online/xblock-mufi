@@ -36,20 +36,16 @@ module.exports = function (grunt) {
             cssView: {
                 src: [
                     directoryPrivate + '/view.less',
+                    directoryPrivate + '/text_editor.less',
                 ],
                 dest: directoryPublic + '/view.less',
             },
             cssEdit: {
                 src: [
                     directoryPrivate + '/edit.less',
-                ],
-                dest: directoryPublic + '/edit.less',
-            },
-            cssTextEditor: {
-                src: [
                     directoryPrivate + '/text_editor.less',
                 ],
-                dest: directoryPublic + '/text_editor.less',
+                dest: directoryPublic + '/edit.less',
             },
         },
         copy: {
@@ -164,19 +160,6 @@ module.exports = function (grunt) {
                 files: {
                     'xblockmufi/public/edit.less.min.css':
                         directoryPublic + '/edit.less',
-                },
-            },
-            text_editor: {
-                options: {
-                    sourceMap: true,
-                    sourceMapFilename: 'xblockmufi/public/text_editor.less.min.css.map',
-                    outputSourceFiles: true,
-                    cleancss: true,
-                    compress: true,
-                },
-                files: {
-                    'xblockmufi/public/text_editor.less.min.css':
-                        directoryPublic + '/text_editor.less',
                 },
             },
         },
