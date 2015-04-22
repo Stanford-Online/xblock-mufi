@@ -14,9 +14,6 @@ xblockmufi/public/edit.less
 xblockmufi/public/edit.less.min.css
 xblockmufi/public/fonts
 xblockmufi/public/library
-xblockmufi/public/text_editor.js
-xblockmufi/public/text_editor.js.min.js
-xblockmufi/public/text_editor.js.min.js.map
 xblockmufi/public/text_editor.less
 xblockmufi/public/text_editor.less.min.css
 xblockmufi/public/text_editor.less.min.css.map

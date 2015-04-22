@@ -16,6 +16,8 @@ class XblockMufi(XBlock):
     Icon of the XBlock. Values : [other (default), video, problem]
     '''
     icon_class = 'problem'
+    has_score = True
+    weight = 1.0
 
     @staticmethod
     def workbench_scenarios():
@@ -202,6 +204,15 @@ class XblockMufi(XBlock):
         Save student answer
         '''
         self.student_answer = submissions['answer']
+
+        grade = 0
+        if len(self.student_answer) > 10:
+            grade = 1.0
+
+        self.runtime.publish(self, "grade",
+            { "value": grade,
+              "max_value": 1.0 })
+
         return {'success':True}
 
     @XBlock.json_handler
