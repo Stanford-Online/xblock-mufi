@@ -68,6 +68,7 @@ function XblockMufiView(runtime, element) {
         $(this).toggleClass('active');
         $('.sr .toggle-open', this).toggle();
         $('.specialCharTable', $element).toggle();
+        return false;
     });
 
     $('.txtEditor li.styleButton').mousedown(function(){
@@ -75,6 +76,7 @@ function XblockMufiView(runtime, element) {
         var argument = $(this).data('argument');
         document.execCommand(command, false, argument);
         $('.contents', $element).focus();
+        return false;
     });
 
     $('.specialCharTable .charWrapper .char').hover(function() {
@@ -90,5 +92,6 @@ function XblockMufiView(runtime, element) {
     $('.specialCharTable .charWrapper .char').mousedown(function() {
         var textToInsert = $(this).html();
         document.execCommand('insertHTML', false, textToInsert);
+        return false;
     });
 }
