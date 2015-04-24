@@ -38,19 +38,18 @@ function XblockMufiEdit(runtime, element) {
     });
 
     // TEXT EDITOR JS
-    $('li.specialButton').click(function() {
+    $('li.specialButton').click(function(e) {
+        e.preventDefault();
         $(this).toggleClass('active');
         $('.sr .toggle-open', this).toggle();
         $('.specialCharTable', $element).toggle();
-        return false;
     });
 
-    $('.txtEditor li.styleButton').mousedown(function(){
+    $('.txtEditor li.styleButton').click(function(e){
+        e.preventDefault();
         var command = $(this).data('command');
         var argument = $(this).data('argument');
         document.execCommand(command, false, argument);
-        $('.contents', $element).focus();
-        return false;
     });
 
     $('.specialCharTable .charWrapper .char').hover(function() {
