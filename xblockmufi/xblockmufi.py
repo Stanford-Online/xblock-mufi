@@ -9,9 +9,10 @@ from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
+from .mixins import EnforceDueDates
 
 
-class XblockMufi(XBlock):
+class XblockMufi(EnforceDueDates, XBlock):
     """
     Icon of the XBlock. Values : [other (default), video, problem]
     """
@@ -89,7 +90,8 @@ class XblockMufi(XBlock):
             context={
                 'display_name': self.display_name,
                 'student_answer': self.student_answer,
-                'your_answer_label': self.your_answer_label,
+                'is_past_due': self.is_past_due(),
+				'your_answer_label': self.your_answer_label,
                 'our_answer_label': self.our_answer_label,
                 'answer_string': self.answer_string,
             },
@@ -189,12 +191,22 @@ class XblockMufi(XBlock):
             fragment.initialize_js(fragment_js)
         return fragment
 
+    def _can_submit(self):
+        if self.is_past_due():
+            return False
+        if self.max_attempts == 0:
+            return True
+        if self.count_attempts < self.max_attempts:
+            return True
+        return False
+
     @XBlock.json_handler
     def student_submit(self, data, suffix=''):
         """
         Save student answer
         """
-        self.student_answer = data['answer']
+		if self._can_submit():
+        	self.student_answer = data['answer']
         return {'success':True}
 
     @XBlock.json_handler
