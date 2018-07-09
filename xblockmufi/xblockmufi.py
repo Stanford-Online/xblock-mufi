@@ -191,22 +191,15 @@ class XblockMufi(EnforceDueDates, XBlock):
             fragment.initialize_js(fragment_js)
         return fragment
 
-    def _can_submit(self):
-        if self.is_past_due():
-            return False
-        if self.max_attempts == 0:
-            return True
-        if self.count_attempts < self.max_attempts:
-            return True
-        return False
-
     @XBlock.json_handler
     def student_submit(self, data, suffix=''):
         """
         Save student answer
         """
-		if self._can_submit():
-        	self.student_answer = data['answer']
+
+        if self.is_past_due():
+            return {'success':False}
+        self.student_answer = data['answer']
         return {'success':True}
 
     @XBlock.json_handler
