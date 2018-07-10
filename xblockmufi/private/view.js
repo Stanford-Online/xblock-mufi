@@ -22,7 +22,7 @@ function XblockMufiView(runtime, element) {
     }
 
     function post_submit(result) {
-        
+        button_holder.addClass(result.submit_class);        
     }
 
     function show_answer() {

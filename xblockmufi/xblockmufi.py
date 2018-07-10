@@ -9,10 +9,11 @@ from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
+from xblockutils.studio_editable import StudioEditableXBlockMixin
 from .mixins import EnforceDueDates
 
 
-class XblockMufi(EnforceDueDates, XBlock):
+class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
     """
     Icon of the XBlock. Values : [other (default), video, problem]
     """
@@ -91,7 +92,8 @@ class XblockMufi(EnforceDueDates, XBlock):
                 'display_name': self.display_name,
                 'student_answer': self.student_answer,
                 'is_past_due': self.is_past_due(),
-				'your_answer_label': self.your_answer_label,
+				'submit_class': self._get_submit_class(),
+                'your_answer_label': self.your_answer_label,
                 'our_answer_label': self.our_answer_label,
                 'answer_string': self.answer_string,
             },
@@ -198,9 +200,18 @@ class XblockMufi(EnforceDueDates, XBlock):
         """
 
         if self.is_past_due():
-            return {'success':False}
+            LOG.error(
+                'This problem is past due',
+            )
+            return {
+                'success':False,
+                'submit_class':self._get_submit_class(),
+            }
         self.student_answer = data['answer']
-        return {'success':True}
+        return {
+            'success':True,
+            'submit_class': self._get_submit_class(),
+        }
 
     @XBlock.json_handler
     def publish_event(self, data, suffix=''):
@@ -244,3 +255,12 @@ class XblockMufi(EnforceDueDates, XBlock):
             # workaround for xblock workbench
             unique_id = 'workbench-workaround-id'
         return unique_id
+
+    def _get_submit_class(self):
+        """
+        Returns the css class for the submit button
+        """
+        result = ''
+        if self.is_past_due():
+            result = 'nodisplay'
+        return result
