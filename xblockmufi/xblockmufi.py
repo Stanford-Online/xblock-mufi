@@ -3,6 +3,7 @@ This is the core logic for the XBlock MUFI: XBlock for transcribing manuscripts 
 """
 import os
 
+import logging
 import pkg_resources
 
 from xblock.core import XBlock
@@ -11,6 +12,8 @@ from xblock.fields import String
 from xblock.fragment import Fragment
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 from .mixins import EnforceDueDates
+
+LOG = logging.getLogger(__name__)
 
 
 class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
