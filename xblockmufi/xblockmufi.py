@@ -152,7 +152,7 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         """
         Retrieve string contents for the file path
         """
-        path = os.path.join('public', path)
+        path = os.path.join('private', path)
         resource_string = pkg_resources.resource_string(__name__, path)
         return resource_string.decode('utf8')
 
@@ -160,7 +160,7 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         """
         Retrieve a public URL for the file path
         """
-        path = os.path.join('public', path)
+        path = os.path.join('private', path)
         resource_url = self.runtime.local_resource_url(self, path)
         return resource_url
 
