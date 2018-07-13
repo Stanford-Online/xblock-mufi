@@ -6,6 +6,8 @@ import os
 import logging
 import pkg_resources
 
+from django.template.context import Context
+from django.template.loader import get_template
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
@@ -77,12 +79,27 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
     """
     Main functions
     """
-    def student_view(self, context=None):
+    def student_view(self, context={}):
         """
         Build the fragment for the default student view
         """
+        context.update(
+            {
+                'display_name': self.display_name,
+                'student_answer': self.student_answer,
+                'is_past_due': self.is_past_due(),
+				'submit_class': self._get_submit_class(),
+                'your_answer_label': self.your_answer_label,
+                'our_answer_label': self.our_answer_label,
+                'answer_string': self.answer_string,
+            }
+        )
+        import pudb; pudb.set_trace()
+        template = get_template('view.html')
         fragment = self.build_fragment(
-            path_html='view.html',
+            # path_html='view.html',
+            template,
+            context,
             paths_css=[
                 'view.less.min.css',
                 'library/font-awesome.min.css',
@@ -91,26 +108,28 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
                 'view.js.min.js',
             ],
             fragment_js='XblockMufiView',
-            context={
-                'display_name': self.display_name,
-                'student_answer': self.student_answer,
-                'is_past_due': self.is_past_due(),
-				'submit_class': self._get_submit_class(),
-                'your_answer_label': self.your_answer_label,
-                'our_answer_label': self.our_answer_label,
-                'answer_string': self.answer_string,
-            },
         )
         return fragment
 
-    def studio_view(self, context=None):
+    def studio_view(self, context={}):
         """
         Build the fragment for the edit/studio view
 
         Implementation is optional.
         """
+        context.update(
+            {
+                'display_name': self.display_name,
+                'your_answer_label': self.your_answer_label,
+                'our_answer_label': self.our_answer_label,
+                'answer_string': self.answer_string,
+            }
+        )
+        template = get_template('edit.html')
         fragment = self.build_fragment(
-            path_html='edit.html',
+            # path_html='edit.html',
+            template,
+            context,
             paths_css=[
                 'edit.less.min.css',
                 'library/font-awesome.min.css',
@@ -119,12 +138,6 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
                 'edit.js.min.js',
             ],
             fragment_js='XblockMufiEdit',
-            context = {
-                'display_name': self.display_name,
-                'your_answer_label': self.your_answer_label,
-                'our_answer_label': self.our_answer_label,
-                'answer_string': self.answer_string,
-            }
         )
         return fragment
 
@@ -148,13 +161,13 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
             'answer_string': self.answer_string,
         }
 
-    def get_resource_string(self, path):
+    '''def get_resource_string(self, path):
         """
         Retrieve string contents for the file path
         """
         path = os.path.join('private', path)
         resource_string = pkg_resources.resource_string(__name__, path)
-        return resource_string.decode('utf8')
+        return resource_string.decode('utf8') '''
 
     def get_resource_url(self, path):
         """
@@ -164,31 +177,32 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         resource_url = self.runtime.local_resource_url(self, path)
         return resource_url
 
-    def build_fragment(self,
-        path_html='',
+    def build_fragment(
+        self,
+        # path_html='',
+        template,
+        context_dict,
         paths_css=[],
         paths_js=[],
-        urls_css=[],
-        urls_js=[],
-        fragment_js=None,
-        context=None,
+        # urls_css=[],
+        # urls_js=[],
+        fragment_js=None,  # =None
+        # context=None,
     ):
         """
         Assemble the HTML, JS, and CSS for an XBlock fragment
         """
-        html_source = self.get_resource_string(path_html)
-        html_source = html_source.format(
-            self=self,
-            **context
-        )
-        fragment = Fragment(html_source)
-        for url in urls_css:
-            fragment.add_css_url(url)
+
+        context = Context(context_dict)
+        fragment = Fragment(template.render(context))   # template.render(context_dict))
+        # fragment = Fragment(html_source)
+        # for url in urls_css:
+            # fragment.add_css_url(url)
         for path in paths_css:
             url = self.get_resource_url(path)
             fragment.add_css_url(url)
-        for url in urls_js:
-            fragment.add_javascript_url(url)
+        # for url in urls_js:
+            # fragment.add_javascript_url(url)
         for path in paths_js:
             url = self.get_resource_url(path)
             fragment.add_javascript_url(url)
@@ -203,9 +217,11 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         """
 
         if self.is_past_due():
+            '''
             LOG.error(
                 'This problem is past due',
             )
+            '''
             return {
                 'success':False,
                 'submit_class':self._get_submit_class(),
