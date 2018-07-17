@@ -3,7 +3,6 @@ This is the core logic for the XBlock MUFI: XBlock for transcribing manuscripts 
 """
 import os
 
-import logging
 import pkg_resources
 
 from django.template.context import Context
@@ -14,8 +13,6 @@ from xblock.fields import String
 from xblock.fragment import Fragment
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 from .mixins import EnforceDueDates
-
-LOG = logging.getLogger(__name__)
 
 
 class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
@@ -96,7 +93,6 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         )
         template = get_template('view.html')
         fragment = self.build_fragment(
-            # path_html='view.html',
             template,
             context,
             paths_css=[
@@ -126,7 +122,6 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         )
         template = get_template('edit.html')
         fragment = self.build_fragment(
-            # path_html='edit.html',
             template,
             context,
             paths_css=[
@@ -170,30 +165,21 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
 
     def build_fragment(
         self,
-        # path_html='',
         template,
         context_dict,
         paths_css=[],
         paths_js=[],
-        # urls_css=[],
-        # urls_js=[],
-        fragment_js=None,  # =None
-        # context=None,
+        fragment_js=None,
     ):
         """
         Assemble the HTML, JS, and CSS for an XBlock fragment
         """
 
         context = Context(context_dict)
-        fragment = Fragment(template.render(context))   # template.render(context_dict))
-        # fragment = Fragment(html_source)
-        # for url in urls_css:
-            # fragment.add_css_url(url)
+        fragment = Fragment(template.render(context))
         for path in paths_css:
             url = self.get_resource_url(path)
             fragment.add_css_url(url)
-        # for url in urls_js:
-            # fragment.add_javascript_url(url)
         for path in paths_js:
             url = self.get_resource_url(path)
             fragment.add_javascript_url(url)
@@ -208,11 +194,6 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         """
 
         if self.is_past_due():
-            '''
-            LOG.error(
-                'This problem is past due',
-            )
-            '''
             return {
                 'success':False,
                 'submit_class':self._get_submit_class(),
