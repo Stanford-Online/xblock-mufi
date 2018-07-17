@@ -94,7 +94,6 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
                 'answer_string': self.answer_string,
             }
         )
-        import pudb; pudb.set_trace()
         template = get_template('view.html')
         fragment = self.build_fragment(
             # path_html='view.html',
@@ -161,19 +160,11 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
             'answer_string': self.answer_string,
         }
 
-    '''def get_resource_string(self, path):
-        """
-        Retrieve string contents for the file path
-        """
-        path = os.path.join('private', path)
-        resource_string = pkg_resources.resource_string(__name__, path)
-        return resource_string.decode('utf8') '''
-
     def get_resource_url(self, path):
         """
         Retrieve a public URL for the file path
         """
-        path = os.path.join('private', path)
+        path = os.path.join('public', path)
         resource_url = self.runtime.local_resource_url(self, path)
         return resource_url
 
