@@ -11,11 +11,10 @@ from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
-from xblockutils.studio_editable import StudioEditableXBlockMixin
 from .mixins import EnforceDueDates
 
 
-class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
+class XblockMufi(EnforceDueDates, XBlock):
     """
     Icon of the XBlock. Values : [other (default), video, problem]
     """
