@@ -191,18 +191,15 @@ class XblockMufi(EnforceDueDates, XBlock):
         """
         Save student answer
         """
-
         if self.is_past_due():
-            return {
-                'success':False,
-                'button_display_class':self._get_button_display_class(),
-            }
+            success_value = False
         else:
+            success_value = True
             self.student_answer = data['answer']
-            return {
-                'success':True,
-                'button_display_class': self._get_button_display_class(),
-            }
+        return {
+            'success': success_value,
+            'button_display_class': self._get_button_display_class(),
+        }
 
     @XBlock.json_handler
     def publish_event(self, data, suffix=''):
