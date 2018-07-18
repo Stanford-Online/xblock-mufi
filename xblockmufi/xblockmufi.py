@@ -85,7 +85,7 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
                 'display_name': self.display_name,
                 'student_answer': self.student_answer,
                 'is_past_due': self.is_past_due(),
-				'submit_class': self._get_submit_class(),
+                'button_display_class': self._get_button_display_class(),
                 'your_answer_label': self.your_answer_label,
                 'our_answer_label': self.our_answer_label,
                 'answer_string': self.answer_string,
@@ -196,13 +196,14 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
         if self.is_past_due():
             return {
                 'success':False,
-                'submit_class':self._get_submit_class(),
+                'button_display_class':self._get_button_display_class(),
             }
-        self.student_answer = data['answer']
-        return {
-            'success':True,
-            'submit_class': self._get_submit_class(),
-        }
+        else:
+            self.student_answer = data['answer']
+            return {
+                'success':True,
+                'button_display_class': self._get_button_display_class(),
+            }
 
     @XBlock.json_handler
     def publish_event(self, data, suffix=''):
@@ -247,7 +248,7 @@ class XblockMufi(EnforceDueDates, StudioEditableXBlockMixin, XBlock):
             unique_id = 'workbench-workaround-id'
         return unique_id
 
-    def _get_submit_class(self):
+    def _get_button_display_class(self):
         """
         Returns the css class for the submit button
         """

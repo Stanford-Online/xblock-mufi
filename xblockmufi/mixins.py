@@ -1,5 +1,5 @@
 """
-Mixins for the Submit and Compare XBlock
+Mixins for the MUFI XBlock
 """
 import datetime
 
