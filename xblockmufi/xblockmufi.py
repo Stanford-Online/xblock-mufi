@@ -92,8 +92,8 @@ class XblockMufi(EnforceDueDates, XBlock):
         )
         template = get_template('view.html')
         fragment = self.build_fragment(
-            template,
-            context,
+            template = template,
+            context_dict = context,
             paths_css=[
                 'view.less.min.css',
                 'library/font-awesome.min.css',
@@ -121,8 +121,8 @@ class XblockMufi(EnforceDueDates, XBlock):
         )
         template = get_template('edit.html')
         fragment = self.build_fragment(
-            template,
-            context,
+            template = template,
+            context_dict = context,
             paths_css=[
                 'edit.less.min.css',
                 'library/font-awesome.min.css',
@@ -173,9 +173,7 @@ class XblockMufi(EnforceDueDates, XBlock):
         """
         Assemble the HTML, JS, and CSS for an XBlock fragment
         """
-
-        context = Context(context_dict)
-        fragment = Fragment(template.render(context))
+        fragment = Fragment(template.render(context_dict))
         for path in paths_css:
             url = self.get_resource_url(path)
             fragment.add_css_url(url)
