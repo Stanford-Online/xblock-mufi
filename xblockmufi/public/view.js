@@ -7,6 +7,7 @@ function XblockMufiView(runtime, element) {
     var handlerUrl = runtime.handlerUrl(element, 'student_submit');
     var publishUrl = runtime.handlerUrl(element, 'publish_event');
 
+    var buttonHolder = $element.find('.button_holder');
     var submit_button = $element.find('.submit_button');
     var reset_button = $element.find('.reset_button');
 
@@ -22,19 +23,19 @@ function XblockMufiView(runtime, element) {
     }
 
     function post_submit(result) {
-        
+        buttonHolder.addClass(result.button_display_class);        
     }
 
     function show_answer() {
-        your_answer.css('display','block');
-        expert_answer.css('display','block');
+        your_answer.removeClass('nodisplay');
+        expert_answer.removeClass('nodisplay');
         submit_button.val('Resubmit');
 
     }
 
     function reset_answer() {
-        your_answer.css('display','none');
-        expert_answer.css('display','none');
+        your_answer.addClass('nodisplay');
+        expert_answer.addClass('nodisplay');
         submit_button.val('Submit and Compare');
     }
 

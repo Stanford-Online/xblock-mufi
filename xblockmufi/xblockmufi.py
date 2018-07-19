@@ -5,13 +5,16 @@ import os
 
 import pkg_resources
 
+from django.template.context import Context
+from django.template.loader import get_template
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
+from .mixins import EnforceDueDates
 
 
-class XblockMufi(XBlock):
+class XblockMufi(EnforceDueDates, XBlock):
     """
     Icon of the XBlock. Values : [other (default), video, problem]
     """
@@ -72,12 +75,25 @@ class XblockMufi(XBlock):
     """
     Main functions
     """
-    def student_view(self, context=None):
+    def student_view(self, context={}):
         """
         Build the fragment for the default student view
         """
+        context.update(
+            {
+                'display_name': self.display_name,
+                'student_answer': self.student_answer,
+                'is_past_due': self.is_past_due(),
+                'button_display_class': self._get_button_display_class(),
+                'your_answer_label': self.your_answer_label,
+                'our_answer_label': self.our_answer_label,
+                'answer_string': self.answer_string,
+            }
+        )
+        template = get_template('view.html')
         fragment = self.build_fragment(
-            path_html='view.html',
+            template = template,
+            context_dict = context,
             paths_css=[
                 'view.less.min.css',
                 'library/font-awesome.min.css',
@@ -86,24 +102,27 @@ class XblockMufi(XBlock):
                 'view.js.min.js',
             ],
             fragment_js='XblockMufiView',
-            context={
-                'display_name': self.display_name,
-                'student_answer': self.student_answer,
-                'your_answer_label': self.your_answer_label,
-                'our_answer_label': self.our_answer_label,
-                'answer_string': self.answer_string,
-            },
         )
         return fragment
 
-    def studio_view(self, context=None):
+    def studio_view(self, context={}):
         """
         Build the fragment for the edit/studio view
 
         Implementation is optional.
         """
+        context.update(
+            {
+                'display_name': self.display_name,
+                'your_answer_label': self.your_answer_label,
+                'our_answer_label': self.our_answer_label,
+                'answer_string': self.answer_string,
+            }
+        )
+        template = get_template('edit.html')
         fragment = self.build_fragment(
-            path_html='edit.html',
+            template = template,
+            context_dict = context,
             paths_css=[
                 'edit.less.min.css',
                 'library/font-awesome.min.css',
@@ -112,12 +131,6 @@ class XblockMufi(XBlock):
                 'edit.js.min.js',
             ],
             fragment_js='XblockMufiEdit',
-            context = {
-                'display_name': self.display_name,
-                'your_answer_label': self.your_answer_label,
-                'our_answer_label': self.our_answer_label,
-                'answer_string': self.answer_string,
-            }
         )
         return fragment
 
@@ -141,14 +154,6 @@ class XblockMufi(XBlock):
             'answer_string': self.answer_string,
         }
 
-    def get_resource_string(self, path):
-        """
-        Retrieve string contents for the file path
-        """
-        path = os.path.join('public', path)
-        resource_string = pkg_resources.resource_string(__name__, path)
-        return resource_string.decode('utf8')
-
     def get_resource_url(self, path):
         """
         Retrieve a public URL for the file path
@@ -157,31 +162,21 @@ class XblockMufi(XBlock):
         resource_url = self.runtime.local_resource_url(self, path)
         return resource_url
 
-    def build_fragment(self,
-        path_html='',
+    def build_fragment(
+        self,
+        template,
+        context_dict,
         paths_css=[],
         paths_js=[],
-        urls_css=[],
-        urls_js=[],
         fragment_js=None,
-        context=None,
     ):
         """
         Assemble the HTML, JS, and CSS for an XBlock fragment
         """
-        html_source = self.get_resource_string(path_html)
-        html_source = html_source.format(
-            self=self,
-            **context
-        )
-        fragment = Fragment(html_source)
-        for url in urls_css:
-            fragment.add_css_url(url)
+        fragment = Fragment(template.render(context_dict))
         for path in paths_css:
             url = self.get_resource_url(path)
             fragment.add_css_url(url)
-        for url in urls_js:
-            fragment.add_javascript_url(url)
         for path in paths_js:
             url = self.get_resource_url(path)
             fragment.add_javascript_url(url)
@@ -194,8 +189,15 @@ class XblockMufi(XBlock):
         """
         Save student answer
         """
-        self.student_answer = data['answer']
-        return {'success':True}
+        if self.is_past_due():
+            success_value = False
+        else:
+            success_value = True
+            self.student_answer = data['answer']
+        return {
+            'success': success_value,
+            'button_display_class': self._get_button_display_class(),
+        }
 
     @XBlock.json_handler
     def publish_event(self, data, suffix=''):
@@ -239,3 +241,12 @@ class XblockMufi(XBlock):
             # workaround for xblock workbench
             unique_id = 'workbench-workaround-id'
         return unique_id
+
+    def _get_button_display_class(self):
+        """
+        Returns the css class for the submit button
+        """
+        result = ''
+        if self.is_past_due():
+            result = 'nodisplay'
+        return result

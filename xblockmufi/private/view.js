@@ -22,19 +22,19 @@ function XblockMufiView(runtime, element) {
     }
 
     function post_submit(result) {
-        
+        button_holder.addClass(result.button_display_class);        
     }
 
     function show_answer() {
-        your_answer.css('display','block');
-        expert_answer.css('display','block');
+        your_answer.removeClass('nodisplay');
+        expert_answer.removeClass('nodisplay');
         submit_button.val('Resubmit');
 
     }
 
     function reset_answer() {
-        your_answer.css('display','none');
-        expert_answer.css('display','none');
+        your_answer.addClass('nodisplay');
+        expert_answer.addClass('nodisplay');
         submit_button.val('Submit and Compare');
     }
 

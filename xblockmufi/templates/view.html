@@ -1,0 +1,18 @@
+<div class="xblockmufi_block">
+    <h2>{{ display_name }}</h2>
+    <div class='your_answer nodisplay'>{{ your_answer_label }}</div>
+    <div class="xblockmufi_block_textarea txtEditor">
+        {% include "text_editor_toolbars.html" %}
+        <div class="contents" contenteditable="true">{{ student_answer }}</div>
+    </div>
+    <div class='expert_answer nodisplay'>
+        <div class='our_answer'>{{ our_answer_label }}</div>
+        <div class='xblockmufi_block_textarea explanation'>{{ answer_string }}</div>
+    </div>
+    {% if not is_past_due %}
+        <div class='button_holder {{ button_display_class }}'>
+			<input class='button action-primary submit_button' type='button' value='Submit and Compare'></input>
+        	<input class='button reset_button' type='button' value='Reset'></input>
+	    </div>
+    {% endif %}
+</div>
