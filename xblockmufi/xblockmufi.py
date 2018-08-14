@@ -7,11 +7,10 @@ from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
-from xblock.validation import ValidationMessage
-from xblockutils.studio_editable import StudioEditableXBlockMixin
+from .mixins import EnforceDueDates
 
 
-class XblockMufi(XBlock):
+class XblockMufi(EnforceDueDates, XBlock):
     """
     Icon of the XBlock. Values : [other (default), video, problem]
     """
@@ -107,23 +106,23 @@ class XblockMufi(XBlock):
             {
                 'display_name': self.display_name,
                 'student_answer': self.student_answer,
+                'is_past_due': self.is_past_due(),
                 'your_answer_label': self.your_answer_label,
                 'our_answer_label': self.our_answer_label,
                 'answer_string': self.answer_string,
             }
         )
-        # import pudb; pudb.set_trace()
         template = get_template('view.html')
         fragment = self.build_fragment(
             template,
             context,
             initialize_js_function='XblockMufiView',
             additional_css=[
-                'private/view.less.min.css',
-                # 'private/library/font-awesome.min.css',
+                'public/view.less.min.css',
+                'public/library/font-awesome.min.css',
             ],
             additional_js=[
-                'private/view.js.min.js',
+                'public/view.js.min.js',
             ],
         )
         return fragment
@@ -149,11 +148,11 @@ class XblockMufi(XBlock):
             context,
             initialize_js_function='XblockMufiEdit',
             additional_css=[
-                'private/edit.less.min.css',
-                # 'private/library/font-awesome.min.css',
+                'public/edit.less.min.css',
+                'public/library/font-awesome.min.css',
             ],
             additional_js=[
-                'private/edit.js.min.js',
+                'public/edit.js.min.js',
             ],
         )
         return fragment
@@ -183,8 +182,14 @@ class XblockMufi(XBlock):
         """
         Save student answer
         """
-        self.student_answer = data['answer']
-        return {'success':True}
+        if self.is_past_due():
+            success_value = False
+        else:
+            success_value = True
+            self.student_answer = data['answer']
+        return {
+            'success': success_value,
+        }
 
     @XBlock.json_handler
     def publish_event(self, data, suffix=''):
