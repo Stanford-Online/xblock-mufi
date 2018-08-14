@@ -1,6 +1,6 @@
 <div class="xblockmufi_block">
-    <h2>{display_name}</h2>
-    <div class='your_answer' style='display:none'>{your_answer_label}</div>
+    <h2>{{ display_name }}</h2>
+    <div class='your_answer' style='display:none'>{{ your_answer_label }}</div>
     <div class="xblockmufi_block_textarea txtEditor">
         <ul class="toolbar">
             <li class="styleButton" data-command="italic" data-argument="null"><a href="#" title="Italic"><i class="fa fa-italic"></i><span class="sr">Italic</span></a></li>
@@ -46,14 +46,16 @@
                 <div class="char" title="Palm Branch, 'ramus'">&#xF1DB;</div>
             </div>
         </div>
-        <div class="contents" contenteditable="true">{student_answer}</div>
+        <div class="contents" contenteditable="true">{{ student_answer }}</div>
     </div>
     <div class='expert_answer' style='display:none'>
-        <div class='our_answer'>{our_answer_label}</div>
-        <div class='xblockmufi_block_textarea explanation'>{answer_string}</div>
+        <div class='our_answer'>{{ our_answer_label }}</div>
+        <div class='xblockmufi_block_textarea explanation'>{{ answer_string }}</div>
     </div>
-    <div class='button_holder'>
-        <input class='button action-primary submit_button' type='button' value='Submit and Compare'></input>
-        <input class='button reset_button' type='button' value='Reset'></input>
-    </div>
+    {% if not is_past_due %}
+        <div class='button_holder'>
+            <input class='button action-primary submit_button' type='button' value='Submit and Compare'></input>
+            <input class='button reset_button' type='button' value='Reset'></input>
+        </div>
+    {% endif %}
 </div>

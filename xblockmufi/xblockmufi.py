@@ -1,17 +1,16 @@
 """
 This is the core logic for the XBlock MUFI: XBlock for transcribing manuscripts using MUFI font.
 """
-import os
-
-import pkg_resources
-
+from django.template.context import Context
+from django.template.loader import get_template
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
+from .mixins import EnforceDueDates
 
 
-class XblockMufi(XBlock):
+class XblockMufi(EnforceDueDates, XBlock):
     """
     Icon of the XBlock. Values : [other (default), video, problem]
     """
@@ -72,27 +71,59 @@ class XblockMufi(XBlock):
     """
     Main functions
     """
+    
+    def build_fragment(
+             self,
+             template,
+             context_dict,
+             initialize_js_function,
+             additional_css=None,
+             additional_js=None,
+     ):
+         #  pylint: disable=too-many-arguments
+         """
+         Creates a fragment for display.
+         """
+         additional_css = additional_css or []
+         additional_js = additional_js or []
+         context = Context(context_dict)
+         fragment = Fragment(template.render(context))
+         for item in additional_css:
+             url = self.runtime.local_resource_url(self, item)
+             fragment.add_css_url(url)
+         for item in additional_js:
+             url = self.runtime.local_resource_url(self, item)
+             fragment.add_javascript_url(url)
+         fragment.initialize_js(initialize_js_function)
+         return fragment
+
     def student_view(self, context=None):
         """
         Build the fragment for the default student view
         """
-        fragment = self.build_fragment(
-            path_html='view.html',
-            paths_css=[
-                'view.less.min.css',
-                'library/font-awesome.min.css',
-            ],
-            paths_js=[
-                'view.js.min.js',
-            ],
-            fragment_js='XblockMufiView',
-            context={
+        context = context or {}
+        context.update(
+            {
                 'display_name': self.display_name,
                 'student_answer': self.student_answer,
+                'is_past_due': self.is_past_due(),
                 'your_answer_label': self.your_answer_label,
                 'our_answer_label': self.our_answer_label,
                 'answer_string': self.answer_string,
-            },
+            }
+        )
+        template = get_template('view.html')
+        fragment = self.build_fragment(
+            template,
+            context,
+            initialize_js_function='XblockMufiView',
+            additional_css=[
+                'public/view.less.min.css',
+                'public/library/font-awesome.min.css',
+            ],
+            additional_js=[
+                'public/view.js.min.js',
+            ],
         )
         return fragment
 
@@ -102,22 +133,27 @@ class XblockMufi(XBlock):
 
         Implementation is optional.
         """
-        fragment = self.build_fragment(
-            path_html='edit.html',
-            paths_css=[
-                'edit.less.min.css',
-                'library/font-awesome.min.css',
-            ],
-            paths_js=[
-                'edit.js.min.js',
-            ],
-            fragment_js='XblockMufiEdit',
-            context = {
+        context = context or {}
+        context.update(
+            {
                 'display_name': self.display_name,
                 'your_answer_label': self.your_answer_label,
                 'our_answer_label': self.our_answer_label,
                 'answer_string': self.answer_string,
             }
+        )
+        template = get_template('edit.html')
+        fragment = self.build_fragment(
+            template,
+            context,
+            initialize_js_function='XblockMufiEdit',
+            additional_css=[
+                'public/edit.less.min.css',
+                'public/library/font-awesome.min.css',
+            ],
+            additional_js=[
+                'public/edit.js.min.js',
+            ],
         )
         return fragment
 
@@ -133,7 +169,7 @@ class XblockMufi(XBlock):
         self.your_answer_label = data['your_answer_label']
         self.our_answer_label = data['our_answer_label']
         self.answer_string = data['answer_string']
-        
+
         return {
             'display_name': self.display_name,
             'your_answer_label': self.your_answer_label,
@@ -141,61 +177,19 @@ class XblockMufi(XBlock):
             'answer_string': self.answer_string,
         }
 
-    def get_resource_string(self, path):
-        """
-        Retrieve string contents for the file path
-        """
-        path = os.path.join('public', path)
-        resource_string = pkg_resources.resource_string(__name__, path)
-        return resource_string.decode('utf8')
-
-    def get_resource_url(self, path):
-        """
-        Retrieve a public URL for the file path
-        """
-        path = os.path.join('public', path)
-        resource_url = self.runtime.local_resource_url(self, path)
-        return resource_url
-
-    def build_fragment(self,
-        path_html='',
-        paths_css=[],
-        paths_js=[],
-        urls_css=[],
-        urls_js=[],
-        fragment_js=None,
-        context=None,
-    ):
-        """
-        Assemble the HTML, JS, and CSS for an XBlock fragment
-        """
-        html_source = self.get_resource_string(path_html)
-        html_source = html_source.format(
-            self=self,
-            **context
-        )
-        fragment = Fragment(html_source)
-        for url in urls_css:
-            fragment.add_css_url(url)
-        for path in paths_css:
-            url = self.get_resource_url(path)
-            fragment.add_css_url(url)
-        for url in urls_js:
-            fragment.add_javascript_url(url)
-        for path in paths_js:
-            url = self.get_resource_url(path)
-            fragment.add_javascript_url(url)
-        if fragment_js:
-            fragment.initialize_js(fragment_js)
-        return fragment
-
     @XBlock.json_handler
     def student_submit(self, data, suffix=''):
         """
         Save student answer
         """
-        self.student_answer = data['answer']
-        return {'success':True}
+        if self.is_past_due():
+            success_value = False
+        else:
+            success_value = True
+            self.student_answer = data['answer']
+        return {
+            'success': success_value,
+        }
 
     @XBlock.json_handler
     def publish_event(self, data, suffix=''):
