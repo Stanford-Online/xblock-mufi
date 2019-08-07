@@ -1,8 +1,6 @@
 """
-Settings for mufi xblock
+Stub settings for xblock
 """
-import os
-
 
 DATABASES = {
     'default': {
@@ -10,14 +8,7 @@ DATABASES = {
         # 'NAME': 'intentionally-omitted',
     },
 }
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
-INSTALLED_APPS = (
-    'django_nose',
-    'xblockmufi',
-)
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-SECRET_KEY = 'xblockmufi_SECRET_KEY'
+LOCALE_PATHS = [
+    'xblockmufi/translations',
+]
+SECRET_KEY = 'SECRET_KEY'

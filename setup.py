@@ -1,28 +1,39 @@
-import json
-import setuptools
+"""
+A manuscript transcription XBlock
+"""
+from os import path
+from setuptools import setup
 
 
-package_json_file = open('package.json', 'r')
-package_json = json.load(package_json_file)
+version = '1.0.0'
+description = __doc__.strip().split('\n')[0]
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.rst')) as file_in:
+    long_description = file_in.read()
 
-setuptools.setup(
-    name=package_json.get('name', 'xblock-test'),
-    version=package_json.get('version', '0.1.0'),
-    description=package_json.get('description'),
-    long_description=package_json.get('description'),
-    author=package_json.get('author', {}).get('name'),
-    author_email=package_json.get('author', {}).get('email'),
-    url=package_json.get('homepage'),
+setup(
+    name='xblock-mufi',
+    version=version,
+    description=description,
+    long_description=long_description,
+    author='Giulio Gratta',
+    author_email='giulio@giuliogratta.com',
+    url='https://github.com/Stanford-Online/xblock-mufi',
     license='AGPL-3.0',
     packages=[
         'xblockmufi',
     ],
     install_requires=[
+        'Django<2.0.0',
+        'edx-opaque-keys',
+        'mock',
+        'six',
         'XBlock',
+        'xblock-utils',
     ],
     entry_points={
         'xblock.v1': [
-            'xblockmufi = xblockmufi:XblockMufi',
+            'xblockmufi = xblockmufi.xblocks:Mufi',
         ],
     },
     package_dir={
@@ -31,6 +42,9 @@ setuptools.setup(
     package_data={
         "xblockmufi": [
             'public/*',
+            'scenarios/*.xml',
+            'templates/*',
+            'translations/*',
         ],
     },
     classifiers=[
@@ -44,4 +58,5 @@ setuptools.setup(
         'Topic :: Education',
         'Topic :: Internet :: WWW/HTTP',
     ],
+    test_suite='xblockmufi.tests',
 )
