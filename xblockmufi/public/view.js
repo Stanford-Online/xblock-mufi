@@ -1,96 +1,98 @@
+/* eslint-disable no-unused-vars */
+/**
+ * Initialize the view
+ * @param {Object} runtime - The XBlock JS Runtime
+ * @param {Object} element - The containing DOM element for this instance of the XBlock
+ * @returns {undefined} nothing
+ */
 function XblockMufiView(runtime, element) {
+    /* eslint-enable no-unused-vars */
     'use strict';
 
     var $ = window.jQuery;
     var $element = $(element);
-
+    var buttonSubmit = $element.find('.submit_button');
+    var buttonCancel = $element.find('.reset_button');
     var handlerUrl = runtime.handlerUrl(element, 'student_submit');
-    var publishUrl = runtime.handlerUrl(element, 'publish_event');
+    var yourAnswer = $element.find('.your_answer');
+    var expertAnswer = $element.find('.expert_answer');
+    var $contents = $element.find('.contents');
 
-    var submit_button = $element.find('.submit_button');
-    var reset_button = $element.find('.reset_button');
-
-    var your_answer = $element.find('.your_answer');
-    var expert_answer = $element.find('.expert_answer');
-
-    function publish_event(data) {
-      $.ajax({
-          type: 'POST',
-          url: publishUrl,
-          data: JSON.stringify(data)
-      });
+    /**
+     * Display user answer
+     * @returns {undefined} nothing
+     */
+    function showAnswer() {
+        yourAnswer.css('display', 'block');
+        expertAnswer.css('display', 'block');
+        buttonSubmit.val('Resubmit');
     }
 
-    function post_submit(result) {
-        
+    /**
+     * Reset answer state
+     * @returns {undefined} nothing
+     */
+    function resetAnswer() {
+        yourAnswer.css('display', 'none');
+        expertAnswer.css('display', 'none');
+        buttonSubmit.val('Submit');
     }
 
-    function show_answer() {
-        your_answer.css('display','block');
-        expert_answer.css('display','block');
-        submit_button.val('Resubmit');
-
-    }
-
-    function reset_answer() {
-        your_answer.css('display','none');
-        expert_answer.css('display','none');
-        submit_button.val('Submit and Compare');
-    }
-
-    $('.submit_button', element).click(function(eventObject) {
+    buttonCancel.on('click', function () {
+        $contents.html('');
         $.ajax({
             type: 'POST',
             url: handlerUrl,
-            data: JSON.stringify({'answer': $('.contents', element).html() }),
-            success: post_submit
+            data: JSON.stringify({
+                answer: '',
+            }),
         });
-        show_answer();
+        resetAnswer();
     });
 
-    $('.reset_button', element).click(function(eventObject) {
-        $('.contents', element).html('');
+    buttonSubmit.on('click', function () {
         $.ajax({
             type: 'POST',
             url: handlerUrl,
-            data: JSON.stringify({'answer': '' }),
-            success: post_submit
+            data: JSON.stringify({
+                answer: $contents.html(),
+            }),
         });
-        reset_answer();
+        showAnswer();
     });
 
-    if ($('.contents', element).html() !== '') {
-        show_answer();
+    if ($contents.html() !== '') {
+        showAnswer();
     }
 
-    // TEXT EDITOR JS
-    $('li.specialButton').click(function(e) {
-        e.preventDefault();
+    /* eslint-disable no-invalid-this*/
+    $('li.specialButton').mousedown(function () {
         $(this).toggleClass('active');
         $('.sr .toggle-open', this).toggle();
         $('.specialCharTable', $element).toggle();
+        return false;
     });
 
-    $('.txtEditor li.styleButton').click(function(e){
-        e.preventDefault();
+    $('.txtEditor li.styleButton').mousedown(function () {
         var command = $(this).data('command');
         var argument = $(this).data('argument');
         document.execCommand(command, false, argument);
+        return false;
     });
 
-    $('.specialCharTable .charWrapper .char').hover(function() {
-        var selChar = $(this).html();
-        var selCharTitle = $(this).attr('title');
-        if (!selCharTitle) {
-            selCharTitle = "";
-        }
-        $('.charZoom').html(selChar);
-        $('.charZoomTitle').text(selCharTitle);
+    $('.specialCharTable .charWrapper .char').hover(function () {
+        var selectedChar = $(this).html();
+        var selectedCharTitle = $(this).attr('title') || '';
+        $('.charZoom').html(selectedChar);
+        $('.charZoomTitle').text(selectedCharTitle);
     });
 
-    $('.specialCharTable .charWrapper .char').mousedown(function() {
+    $('.specialCharTable .charWrapper .char').mousedown(function () {
         var textToInsert = $(this).html();
         document.execCommand('insertHTML', false, textToInsert);
         return false;
     });
+    /* eslint-enable no-invalid-this*/
+
+    $contents.focus();
 }
