@@ -35,10 +35,6 @@ add the following to your `requirements.txt` file:
 
     xblock-mufi
 
-You'll also need to add this to your `INSTALLED_APPS`:
-
-    xblockmufi
-
 
 Course Staff
 ~~~~~~~~~~~~
